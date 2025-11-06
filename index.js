@@ -7,27 +7,39 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // CORS Configuration
-const allowedOrigins =
-  process.env.NODE_ENV === "production"
-    ? [
-        "https://www.satvikyoga.nl",
-        "https://satvikyoga.nl",
-        "https://satvikyogaui.vercel.app",
-      ]
-    : "*"; // Allow all origins in development
+const allowedOrigins = [
+  "https://www.satvikyoga.nl",
+  "https://satvikyoga.nl",
+  "https://satvikyogaui.vercel.app",
+  "https://satvikyogaui-git-main-shashwattripathi23.vercel.app", // Git branch deployment
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://localhost:5174",
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    console.log(`Incoming request from origin: ${origin}`);
+
+    // Allow requests with no origin (like mobile apps, Postman, or curl requests)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins === "*") {
-      // Development: allow all origins
+    // In development, allow all origins
+    if (process.env.NODE_ENV !== "production") {
+      console.log("Development mode - allowing all origins");
+      return callback(null, true);
+    }
+
+    // In production, check if origin is in allowed list
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      console.log(`Origin ${origin} is allowed`);
       callback(null, true);
-    } else if (allowedOrigins.indexOf(origin) !== -1) {
-      // Production: only allow specified origins
+    } else if (origin.endsWith(".vercel.app")) {
+      // Allow all Vercel preview deployments
+      console.log(`Vercel deployment ${origin} is allowed`);
       callback(null, true);
     } else {
+      console.log(`CORS blocked origin: ${origin}`);
       callback(new Error("Not allowed by CORS"));
     }
   },

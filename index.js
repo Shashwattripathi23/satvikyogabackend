@@ -11,7 +11,7 @@ const allowedOrigins = [
   "https://www.satvikyoga.nl",
   "https://satvikyoga.nl",
   "https://satvikyogaui.vercel.app",
-  "https://satvikyogaui-git-main-shashwattripathi23.vercel.app", // Git branch deployment
+  "https://satvikyogaui.vercel.app/",
   "http://localhost:3000",
   "http://localhost:5173",
   "http://localhost:5174",
@@ -19,33 +19,37 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log(`Incoming request from origin: ${origin}`);
+    console.log(`[CORS] Incoming request from origin: ${origin}`);
+    console.log(`[CORS] NODE_ENV: ${process.env.NODE_ENV}`);
 
     // Allow requests with no origin (like mobile apps, Postman, or curl requests)
-    if (!origin) return callback(null, true);
-
-    // In development, allow all origins
-    if (process.env.NODE_ENV !== "production") {
-      console.log("Development mode - allowing all origins");
+    if (!origin) {
+      console.log("[CORS] No origin - allowing");
       return callback(null, true);
     }
 
-    // In production, check if origin is in allowed list
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      console.log(`Origin ${origin} is allowed`);
-      callback(null, true);
-    } else if (origin.endsWith(".vercel.app")) {
-      // Allow all Vercel preview deployments
-      console.log(`Vercel deployment ${origin} is allowed`);
-      callback(null, true);
+    // In development, allow all origins
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[CORS] Development mode - allowing all origins");
+      return callback(null, true);
+    }
+
+    // In production, check if origin is in allowed list OR is a Vercel deployment
+    const isAllowed = allowedOrigins.includes(origin);
+    const isVercelApp = origin.includes("vercel.app");
+
+    if (isAllowed || isVercelApp) {
+      console.log(`[CORS] ✅ Origin ${origin} is ALLOWED`);
+      return callback(null, true);
     } else {
-      console.log(`CORS blocked origin: ${origin}`);
-      callback(new Error("Not allowed by CORS"));
+      console.log(`[CORS] ❌ Origin ${origin} is BLOCKED`);
+      return callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  optionsSuccessStatus: 200,
 };
 
 // Middleware

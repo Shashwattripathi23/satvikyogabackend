@@ -12,9 +12,9 @@ const allowedOrigins = [
   "https://satvikyoga.nl",
   "https://satvikyogaui.vercel.app",
   "https://satvikyogaui.vercel.app/",
-  "http://localhost:3000",
-  "http://localhost:5173",
-  "http://localhost:5174",
+//   "http://localhost:3000",
+//   "http://localhost:5173",
+//   "http://localhost:5174",
 ];
 
 const corsOptions = {
@@ -154,11 +154,7 @@ app.post("/api/send-email", async (req, res) => {
             <p style="color: #999; font-size: 14px; margin-top: 5px;">- The Bhagavad Gita</p>
           </div>
           
-          <div style="background-color: #83B792; color: white; padding: 15px; border-radius: 8px; text-align: center; margin-top: 25px;">
-            <p style="margin: 5px 0; font-size: 14px;">📞 Contact: +91-XXXXXXXXXX</p>
-            <p style="margin: 5px 0; font-size: 14px;">📧 Email: ${process.env.EMAIL_USER}</p>
-            <p style="margin: 5px 0; font-size: 14px;">📍 Location: Your Studio Address</p>
-          </div>
+        
           
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #E5E0D8; text-align: center; color: #999;">
             <p style="margin: 0; font-size: 12px;">With gratitude and light,<br>The Satvik Yoga Studio Team</p>
